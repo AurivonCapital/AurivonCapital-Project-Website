@@ -6,35 +6,125 @@
     <title>Aurivon Terminal | Active Desk</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 text-white font-sans flex h-screen overflow-hidden">
+<body class="bg-slate-950 text-slate-200 font-sans flex h-screen flex-col overflow-hidden">
 
-    <aside class="w-20 lg:w-64 bg-slate-900 border-r border-slate-800 flex flex-col items-center py-8">
-        <div class="text-2xl font-black italic text-blue-500 mb-12 lg:block hidden">AURIVON</div>
-        <div class="space-y-8 flex-1">
-            <div class="text-blue-500 bg-blue-600/10 p-3 rounded-xl border border-blue-600/20">Dashboard</div>
+    <header class="h-20 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-8 shrink-0">
+        <div class="flex items-center gap-6">
+            <div class="text-xl font-black italic tracking-tighter text-white">AURIVON <span class="text-blue-500">TERMINAL</span></div>
+            <select onchange="changeSymbol(this.value)" class="bg-slate-800 text-white text-xs font-bold p-2 rounded-lg border border-slate-700 outline-none">
+                <option value="OANDA:XAUUSD">GOLD (XAUUSD)</option>
+                <option value="FX:GBPJPY">GBPJPY</option>
+                <option value="FX:EURUSD">EURUSD</option>
+                <option value="FX:USDJPY">USDJPY</option>
+                <option value="BITSTAMP:BTCUSD">BITCOIN</option>
+            </select>
         </div>
-    </aside>
 
-    <main class="flex-1 flex flex-col">
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 backdrop-blur-md">
-            <div class="flex items-center gap-4">
-                <h1 class="text-xl font-bold uppercase tracking-widest italic">Terminal Access</h1>
-                <span class="bg-blue-600/20 text-blue-500 text-[9px] px-2 py-1 rounded font-bold uppercase">Active: Authorized Trader</span>
+        <div class="flex gap-10">
+            <div class="text-right">
+                <p class="text-[9px] text-slate-500 uppercase font-bold">Account Balance</p>
+                <p id="balance" class="text-lg font-mono font-bold text-white">$50,000.00</p>
             </div>
-            
-            <div class="flex items-center gap-8">
-                <div class="text-right hidden md:block">
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Total Profit</p>
-                    <p id="profit-display" class="text-xl font-mono text-green-400 font-bold">Connecting...</p>
+            <div class="text-right">
+                <p class="text-[9px] text-slate-500 uppercase font-bold">Equity</p>
+                <p id="equity-display" class="text-lg font-mono font-bold text-blue-400">Loading...</p>
+            </div>
+            <div class="text-right">
+                <p class="text-[9px] text-slate-500 uppercase font-bold">Floating P/L</p>
+                <p id="profit-display" class="text-lg font-mono font-bold text-green-400">$0.00</p>
+            </div>
+            <button onclick="window.location.href='index.html'" class="bg-red-500 hover:bg-red-600 text-white text-[10px] font-bold uppercase px-4 py-2 rounded-lg transition">Secure Exit</button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <main class="flex-1 bg-black relative">
+            <div id="tradingview_widget" class="h-full w-full"></div>
+        </main>
+
+        <aside class="w-80 bg-slate-900 border-l border-slate-800 flex flex-col shrink-0">
+            <div class="p-6 border-b border-slate-800">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Market Execution</h3>
+                <div class="mb-4">
+                    <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Lot Size</label>
+                    <input type="number" value="0.10" step="0.01" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-lg text-white font-mono text-sm outline-none focus:border-blue-500">
                 </div>
-                
-                <button onclick="window.location.href='index.html'" class="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/30 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">
-                    Secure Exit
-                </button>
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-xs uppercase shadow-lg shadow-green-900/20">Buy</button>
+                    <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl text-xs uppercase shadow-lg shadow-red-900/20">Sell</button>
+                </div>
             </div>
-        </div>
 
-        <div class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <div class="flex border-b border-slate-800">
+                    <button class="flex-1 py-3 text-[10px] font-bold uppercase border-b-2 border-blue-500 bg-slate-800/50">Open Positions</button>
+                    <button class="flex-1 py-3 text-[10px] font-bold uppercase text-slate-500">History</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-3">
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-[10px] font-bold text-blue-400 uppercase">XAUUSD | Buy</span>
+                            <span class="text-[10px] font-mono text-green-400">+$142.50</span>
+                        </div>
+                        <div class="flex justify-between text-[9px] text-slate-600 font-mono">
+                            <span>Size: 0.10</span>
+                            <span>Price: 2024.12</span>
+                        </div>
+                    </div>
+                    <p class="text-[9px] text-slate-600 text-center italic mt-4">Cloud sync active...</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let currentSymbol = "OANDA:XAUUSD";
+        let widget = null;
+
+        function initWidget(symbol) {
+            widget = new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "15",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#0f172a",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "container_id": "tradingview_widget"
+            });
+        }
+
+        function changeSymbol(newSymbol) {
+            currentSymbol = newSymbol;
+            initWidget(newSymbol);
+        }
+
+        async function fetchMetaApiData() {
+            const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
+            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
+            try {
+                const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { 
+                    headers: { 'auth-token': TOKEN } 
+                });
+                const data = await res.json();
+                document.getElementById('equity-display').innerText = "$" + data.equity.toLocaleString();
+                document.getElementById('profit-display').innerText = "$" + data.profit.toLocaleString();
+                document.getElementById('balance').innerText = "$" + data.balance.toLocaleString();
+            } catch (e) { 
+                console.log("Syncing terminal..."); 
+            }
+        }
+
+        initWidget(currentSymbol);
+        fetchMetaApiData();
+        setInterval(fetchMetaApiData, 30000); // Update data every 30 seconds
+    </script>
+</body>
+</html>        <div class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
             <div class="lg:col-span-3 bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
                 <div id="tradingview_chart" class="h-full w-full"></div>
             </div>
