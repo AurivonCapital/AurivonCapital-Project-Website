@@ -73,4 +73,43 @@
         updateStats(); setInterval(updateStats, 60000);
     </script>
 </body>
+</html>        <div class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
+            <div class="lg:col-span-3 bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
+                <div id="tradingview_chart" class="h-full w-full"></div>
+            </div>
+
+            <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6 text-center">Execution Desk</h2>
+                    <label class="text-[9px] text-slate-500 font-bold uppercase mb-2 block">Lot Size</label>
+                    <input type="number" value="0.10" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-white font-mono mb-6">
+                </div>
+
+                <div class="space-y-4">
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-5 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-green-600/10">Buy / Long</button>
+                    <button class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-red-600/10">Sell / Short</button>
+                    <p class="text-[8px] text-slate-600 text-center uppercase font-bold tracking-widest">Execution Engine v2.4</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        new TradingView.widget({
+            "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15", "theme": "dark", "style": "1", "locale": "en", "container_id": "tradingview_chart"
+        });
+
+        async function updateStats() {
+            const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
+            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
+            try {
+                const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { headers: { 'auth-token': TOKEN } });
+                const data = await res.json();
+                document.getElementById('profit-display').innerText = "$" + data.profit.toLocaleString();
+            } catch (e) { console.log("Reconnecting..."); }
+        }
+        updateStats(); setInterval(updateStats, 60000);
+    </script>
+</body>
 </html>
