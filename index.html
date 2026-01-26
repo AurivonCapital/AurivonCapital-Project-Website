@@ -5,36 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aurivon Capital | Institutional Mastery</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
-        .grit-bg { background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80'); background-size: cover; }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a; /* Slate 900 */
+            z-index: -1;
+        }
+        .hero-section { position: relative; overflow: hidden; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans">
+
     <nav class="p-6 bg-white border-b flex justify-between items-center sticky top-0 z-50">
         <div class="text-2xl font-black italic tracking-tighter text-slate-900">AURIVON <span class="text-blue-600">CAPITAL</span></div>
         <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-slate-500">
             <a href="index.html" class="text-blue-600">Home</a>
             <a href="about.html" class="hover:text-slate-900 transition">Memoir</a>
             <a href="strategy.html" class="hover:text-slate-900 transition">Recruitment</a>
-            <a href="login.html" class="hover:text-slate-900 transition underline underline-offset-4">Trader Login</a>
+            <a href="login.html" class="hover:text-slate-900 transition">Trader Login</a>
         </div>
         <a href="https://t.me/YOUR_LINK" class="bg-slate-900 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest">Global Desk</a>
     </nav>
 
-    <header class="relative py-32 px-6 grit-bg text-white text-center">
-        <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6 uppercase italic">Grit. Discipline. <br><span class="text-blue-500">Aurivon.</span></h1>
-        <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-10">We don't follow markets. We dissect them. Join the elite.</p>
-        <div class="flex flex-col md:flex-row justify-center gap-4">
-            <a href="strategy.html" class="bg-blue-600 text-white px-10 py-4 rounded-full font-bold uppercase text-sm">Join the Rally</a>
-            <a href="#evaluation" class="bg-white/10 border border-white/20 text-white px-10 py-4 rounded-full font-bold uppercase text-sm">Buy Evaluation</a>
+    <header class="hero-section py-32 px-6 text-white text-center min-h-[80vh] flex flex-col justify-center items-center">
+        <div id="particles-js"></div>
+        <div class="relative z-10 max-w-4xl">
+            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6 uppercase italic">Grit. Discipline. <br><span class="text-blue-500 text-shadow-lg">Aurivon.</span></h1>
+            <p class="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed mb-10">Institutional Proprietary Trading. Master the gold market with $50,000 in funded capital.</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="strategy.html" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold uppercase text-sm transition transform hover:scale-105 shadow-xl shadow-blue-600/30">Join the Rally</a>
+                <a href="#evaluation" class="bg-white/10 backdrop-blur-md border-2 border-white/20 hover:border-white text-white px-10 py-4 rounded-full font-bold uppercase text-sm transition">Buy Evaluation</a>
+            </div>
         </div>
     </header>
 
+    <section class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-xs font-bold text-blue-600 uppercase tracking-[0.4em] mb-2">Market Environment</h2>
+                <h3 class="text-4xl font-black italic uppercase tracking-tighter">Live XAUUSD Data</h3>
+            </div>
+            <div class="h-[600px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200">
+                <div id="tradingview_chart" class="h-full"></div>
+            </div>
+        </div>
+    </section>
+
     <section id="evaluation" class="py-24 bg-slate-900 text-white text-center px-6">
         <div class="max-w-3xl mx-auto">
-            <h2 class="text-4xl font-bold mb-12 italic uppercase">Project Cheetah Evaluation</h2>
-            <div class="bg-slate-800 p-10 rounded-[3rem] border border-slate-700 inline-block w-full max-w-sm shadow-2xl">
-                <p class="text-blue-400 font-bold uppercase text-[10px] tracking-widest mb-2">Phase 1 Challenge</p>
+            <h2 class="text-xs font-bold text-blue-500 uppercase tracking-[0.4em] mb-4">The Gatekeeper</h2>
+            <h3 class="text-5xl font-black mb-6 italic tracking-tighter uppercase leading-none">Project Cheetah <br>Evaluation</h3>
+            <p class="text-slate-400 mb-12 max-w-lg mx-auto">Direct access to Aurivon capital. Pass the evaluation, join the inner circle, and keep up to 80% of the profits.</p>
+            
+            <div class="bg-slate-800 p-10 rounded-[3rem] border border-slate-700 inline-block w-full max-w-sm shadow-2xl relative">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 px-4 py-1 rounded text-[10px] font-bold uppercase">Institutional Tier</div>
+                <p class="text-blue-400 font-bold uppercase text-[10px] tracking-widest mb-4">Standard Account</p>
+                <p class="text-5xl font-black mb-8">$185.00 <span class="text-xs font-normal text-slate-500 uppercase tracking-widest">USD</span></p>
+                
+                <div class="text-left space-y-4 mb-10">
+                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> $50,000 Funded Capital</div>
+                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> 10% Profit Target</div>
+                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> 8% Maximum Drawdown</div>
+                </div>
+
+                <a href="YOUR_STRIPE_LINK_HERE" class="block w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold uppercase tracking-widest transition-all">Purchase Challenge</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="p-12 text-center bg-white border-t border-slate-100">
+        <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-2">&copy; 2026 Aurivon Capital | Global Proprietary Firm</p>
+        <a href="disclaimer.html" class="text-[10px] text-blue-600 font-bold uppercase hover:underline">Risk Disclaimer & Legal</a>
+    </footer>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+        new TradingView.widget({
+            "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "D", "theme": "light", "style": "1", "locale": "en", "container_id": "tradingview_chart"
+        });
+
+        /* Particles.js Config for Blue Connecting Dots */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#2563eb" }, /* Blue 600 */
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": false },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#2563eb", "opacity": 0.4, "width": 1 },
+                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
+                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
+            },
+            "retina_detect": true
+        });
+    </script>
+</body>
+</html>                <p class="text-blue-400 font-bold uppercase text-[10px] tracking-widest mb-2">Phase 1 Challenge</p>
                 <p class="text-5xl font-black mb-6">$185.00</p>
                 <ul class="text-left text-sm text-slate-400 space-y-3 mb-8">
                     <li>✓ $50,000 Trading Capital</li>
