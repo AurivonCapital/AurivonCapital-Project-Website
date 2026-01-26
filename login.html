@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal Access | Aurivon Capital</title>
+    <title>Terminal Login | Aurivon Capital</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
-        #particles-js { position: fixed; width: 100%; height: 100%; background-color: #020617; z-index: -1; }
+        #particles-js { position: fixed; width: 100%; height: 100%; background-color: #020617; z-index: -1; top: 0; left: 0; }
         .login-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
@@ -24,17 +24,53 @@
             <div class="space-y-6">
                 <div>
                     <label class="text-[10px] text-slate-500 uppercase font-bold tracking-widest block mb-2">Trader ID</label>
-                    <input id="traderID" type="text" placeholder="Enter ID" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500">
+                    <input id="traderID" type="text" placeholder="Enter ID" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
                 </div>
                 <div>
                     <label class="text-[10px] text-slate-500 uppercase font-bold tracking-widest block mb-2">Access Key</label>
-                    <input id="accessKey" type="password" placeholder="••••••••" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500">
+                    <input id="accessKey" type="password" placeholder="••••••••" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
                 </div>
                 
                 <button onclick="validateTrader()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl uppercase tracking-widest transition shadow-lg shadow-blue-600/20">
                     Access Terminal
                 </button>
-                <p id="errorMessage" class="text-red-500 text-[10px] uppercase text-center hidden font-bold">Invalid Authorized Credentials</p>
+                <p id="errorMessage" class="text-red-500 text-[10px] uppercase text-center hidden font-bold">Access Denied: Invalid Credentials</p>
+            </div>
+            <p class="text-[9px] text-slate-600 text-center mt-8 uppercase italic">IP Logged. Unauthorized access prohibited.</p>
+        </div>
+        <div class="text-center mt-6">
+            <a href="index.html" class="text-xs text-slate-500 hover:text-white transition uppercase tracking-widest">← Exit to Public Site</a>
+        </div>
+    </div>
+
+    <script>
+        function validateTrader() {
+            const id = document.getElementById('traderID').value;
+            const key = document.getElementById('accessKey').value;
+            const error = document.getElementById('errorMessage');
+
+            // AUTHORIZED TRADERS LIST
+            const authorized = [
+                { user: "GohKeeYiong", pass: "Aurivon2026" },
+                { user: "SuperAdmin", pass: "Master88" }
+            ];
+
+            const isValid = authorized.some(u => u.user === id && u.pass === key);
+
+            if (isValid) {
+                window.location.href = 'dashboard.html';
+            } else {
+                error.classList.remove('hidden');
+                setTimeout(() => error.classList.add('hidden'), 3000);
+            }
+        }
+
+        particlesJS("particles-js", {
+            "particles": { "number": { "value": 60 }, "color": { "value": "#2563eb" }, "line_linked": { "enable": true, "color": "#2563eb", "opacity": 0.2 } }
+        });
+    </script>
+</body>
+</html>                <p id="errorMessage" class="text-red-500 text-[10px] uppercase text-center hidden font-bold">Invalid Authorized Credentials</p>
             </div>
             <p class="text-[9px] text-slate-600 text-center mt-8 uppercase italic">IP Logged. Unauthorized access is prohibited.</p>
         </div>
