@@ -3,38 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurivon Capital | Institutional Trading</title>
+    <title>Aurivon Terminal | Trader Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans">
+<body class="bg-slate-900 text-slate-100 font-sans flex h-screen overflow-hidden">
 
-    <nav class="p-6 bg-white border-b flex justify-between items-center sticky top-0 z-50">
-        <div class="text-2xl font-black italic tracking-tighter text-slate-900">AURIVON <span class="text-blue-600">CAPITAL</span></div>
-        <a href="#" class="bg-blue-600 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-blue-700 transition">Join Telegram</a>
-    </nav>
-
-    <header class="py-16 px-6 text-center">
-        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-4">Master the Market.</h1>
-        <p class="text-slate-500 text-lg italic max-w-lg mx-auto">Institutional discipline. Proprietary analytics.</p>
-    </header>
-
-    <section class="max-w-6xl mx-auto px-6 mb-12">
-        <div class="h-[500px] bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-            <div id="tradingview_chart" class="h-full"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-            <script type="text/javascript">
-                new TradingView.widget({
-                    "autosize": true,
-                    "symbol": "OANDA:XAUUSD",
-                    "interval": "H1",
-                    "theme": "light",
-                    "style": "1",
-                    "locale": "en",
-                    "container_id": "tradingview_chart"
-                });
-            </script>
+    <aside class="w-64 bg-slate-950 border-r border-slate-800 flex-shrink-0 flex flex-col">
+        <div class="p-6 text-xl font-black italic tracking-tighter text-blue-500">AURIVON</div>
+        <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4">Active Traders</p>
+            <a href="#" class="block p-3 rounded-xl bg-blue-600/10 border border-blue-500/50 text-blue-400 text-sm font-medium">Trader #01 (You)</a>
+            <div class="p-3 text-slate-600 text-sm border border-transparent italic">Trader #02 (Restricted)</div>
+            <div class="p-3 text-slate-600 text-sm border border-transparent italic">Trader #03 (Restricted)</div>
+        </nav>
+        <div class="p-4 border-t border-slate-800">
+            <button class="w-full py-2 text-xs font-bold text-slate-400 hover:text-white uppercase tracking-widest">Logout</button>
         </div>
-    </section>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-900 p-8">
+        
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight uppercase">Trading Desk</h1>
+                <p class="text-slate-500 text-sm uppercase tracking-widest mt-1">Institutional Account: #769E348</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Balance</p>
+                    <p id="profit-display" class="text-2xl font-mono text-green-400 font-bold">Connecting...</p>
+                </div>
+                <div class="text-right border-l border-slate-700 pl-4">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Equity</p>
+                    <p id="equity-display" class="text-2xl font-mono text-white font-bold">Pending...</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            
+            <div class="xl:col-span-2 bg-slate-950 rounded-3xl border border-slate-800 p-2 h-[500px]">
+                <div id="tradingview_chart" class="h-full w-full"></div>
+            </div>
+
+            <div class="bg-slate-950 rounded-3xl border border-slate-800 p-6 flex flex-col justify-between">
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Execution Panel</h4>
+                    <label class="text-[10px] text-slate-500 uppercase font-bold">Lot Size</p>
+                    <input type="number" value="0.10" step="0.01" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white font-mono mb-4 focus:border-blue-500 outline-none">
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="alert('Buy Functionality requires Backend Setup')" class="w-full bg-green-500 hover:bg-green-600 text-white font-black py-4 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-green-500/20">Buy / Long</button>
+                    <button onclick="alert('Sell Functionality requires Backend Setup')" class="w-full bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-red-500/20">Sell / Short</button>
+                    <p class="text-[10px] text-slate-500 text-center uppercase tracking-tighter mt-4">Trades are executed via MetaApi Cloud-G2</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "OANDA:XAUUSD",
+            "interval": "H1",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "container_id": "tradingview_chart"
+        });
+
+        async function updateStats() {
+            const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
+            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
+            try {
+                const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { headers: { 'auth-token': TOKEN } });
+                const data = await res.json();
+                document.getElementById('profit-display').innerText = "$" + data.profit.toLocaleString();
+                document.getElementById('equity-display').innerText = "$" + data.equity.toLocaleString();
+            } catch (e) { console.log("Reconnecting..."); }
+        }
+        updateStats();
+        setInterval(updateStats, 60000);
+    </script>
+</body>
+</html>    </section>
 
     <section class="max-w-4xl mx-auto px-6 mb-20">
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden text-center">
