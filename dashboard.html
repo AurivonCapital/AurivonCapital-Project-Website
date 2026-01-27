@@ -73,15 +73,16 @@
         // Fetch MetaApi Data (Note: Move Token to Backend later for security!)
         async function updateFinancials() {
     try {
-        // Pointing to your new Vercel Bridge
+        // This is the magic line that calls your new bridge
         const res = await fetch('/api/getStats'); 
         const data = await res.json();
         
+        // This puts the numbers into your dashboard elements
         document.getElementById('equity').innerText = "$" + data.equity.toLocaleString();
         document.getElementById('profit').innerText = "$" + data.profit.toLocaleString();
         document.getElementById('balance').innerText = "$" + data.balance.toLocaleString();
     } catch (e) {
-        console.log("Connecting to secure vault...");
+        console.log("System Syncing...");
     }
 }
 
