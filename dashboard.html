@@ -11,26 +11,20 @@
     <header class="h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6 shrink-0">
         <div class="flex items-center gap-6">
             <div class="text-lg font-black italic tracking-tighter text-white">AURIVON <span class="text-blue-500">TERMINAL</span></div>
-            <select onchange="changePair(this.value)" class="bg-slate-950 text-blue-400 text-[10px] font-bold p-2 rounded border border-slate-700 uppercase outline-none">
-                <option value="OANDA:XAUUSD">Gold (XAUUSD)</option>
-                <option value="FX:GBPJPY">GBPJPY</option>
-                <option value="FX:EURUSD">EURUSD</option>
-                <option value="BITSTAMP:BTCUSD">Bitcoin</option>
-            </select>
         </div>
 
         <div class="flex gap-8 items-center">
             <div class="text-right">
                 <span class="text-[8px] text-slate-500 uppercase block font-bold">Balance</span>
-                <span class="text-sm font-mono font-bold text-white">$50,000.00</span>
+                <span id="balance" class="text-sm font-mono font-bold text-white">$0.00</span>
             </div>
             <div class="text-right">
                 <span class="text-[8px] text-slate-500 uppercase block font-bold">Equity</span>
-                <span id="live-equity" class="text-sm font-mono font-bold text-blue-400">Loading...</span>
+                <span id="equity" class="text-sm font-mono font-bold text-blue-400">Loading...</span>
             </div>
             <div class="text-right">
                 <span class="text-[8px] text-slate-500 uppercase block font-bold">Floating P/L</span>
-                <span id="live-profit" class="text-sm font-mono font-bold text-green-400">$0.00</span>
+                <span id="profit" class="text-sm font-mono font-bold text-green-400">$0.00</span>
             </div>
             <button onclick="window.location.href='index.html'" class="bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/30 text-[9px] font-black uppercase px-3 py-2 rounded transition">Secure Exit</button>
         </div>
@@ -38,178 +32,26 @@
 
     <div class="flex flex-1 overflow-hidden">
         <main class="flex-1 bg-black">
-            <div id="main-chart" class="h-full w-full"></div>
-        </main>
-
-        <aside class="w-72 bg-slate-900 border-l border-slate-800 flex flex-col">
-            <div class="p-6 border-b border-slate-800">
-                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6">Market Execution</h3>
-                <div class="mb-6">
-                    <label class="text-[9px] text-slate-500 font-bold uppercase block mb-2">Lot Size</label>
-                    <input type="number" value="0.10" step="0.01" class="w-full bg-black border border-slate-700 p-4 rounded text-white font-mono text-center outline-none focus:border-blue-500">
-                </div>
-                <div class="grid grid-cols-1 gap-3">
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded uppercase text-xs shadow-lg shadow-green-900/20">Buy / Long</button>
-                    <button class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded uppercase text-xs shadow-lg shadow-red-900/20">Sell / Short</button>
-                </div>
-            </div>
-
-            <div class="p-6 flex-1 overflow-y-auto">
-                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Trade History</h3>
-                <div id="history" class="space-y-2">
-                    <div class="bg-black/40 p-3 rounded border border-slate-800 flex justify-between items-center">
-                        <span class="text-[9px] font-bold uppercase">XAUUSD</span>
-                        <span class="text-[9px] font-mono text-green-400">+$120.00</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    </div>
-
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        let widget = null;
-
-        function loadChart(symbol) {
-            widget = new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "15",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "container_id": "main-chart",
-                "hide_side_toolbar": false
-            });
-        }
-
-        function changePair(val) { loadChart(val); }
-
-        async function syncAccount() {
-            const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
-            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
-            try {
-                const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { headers: { 'auth-token': TOKEN } });
-                const data = await res.json();
-                document.getElementById('live-equity').innerText = "$" + data.equity.toLocaleString();
-                document.getElementById('live-profit').innerText = "$" + data.profit.toLocaleString();
-            } catch (e) { console.log("Terminal Syncing..."); }
-        }
-
-        loadChart("OANDA:XAUUSD");
-        syncAccount();
-        setInterval(syncAccount, 30000);
-    </script>
-</body>
-</html>    </header>
-
-    <div class="flex flex-1 overflow-hidden">
-        <main class="flex-1 bg-black">
-            <div id="tv_chart_container" class="h-full w-full"></div>
-        </main>
-
-        <aside class="w-72 bg-slate-900 border-l border-slate-800 flex flex-col">
-            <div class="p-6 border-b border-slate-800">
-                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6">Market Execution</h3>
-                <div class="mb-6">
-                    <label class="text-[9px] text-slate-500 font-bold uppercase block mb-2">Lot Size</label>
-                    <input type="number" value="0.10" step="0.01" class="w-full bg-black border border-slate-700 p-4 rounded text-white font-mono text-center outline-none">
-                </div>
-                <div class="space-y-3">
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded uppercase text-xs transition">Buy / Long</button>
-                    <button class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded uppercase text-xs transition">Sell / Short</button>
-                </div>
-            </div>
-
-            <div class="p-6 flex-1 overflow-y-auto">
-                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Position History</h3>
-                <div class="space-y-3">
-                    <div class="bg-black/50 p-3 rounded border border-slate-800 flex justify-between items-center">
-                        <span class="text-[9px] font-bold">XAUUSD</span>
-                        <span class="text-[9px] font-mono text-green-400 font-bold">+$42.10</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    </div>
-
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        let tvWidget = null;
-        function loadChart(symbol) {
-            tvWidget = new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "15",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "container_id": "tv_chart_container",
-                "hide_side_toolbar": false,
-                "allow_symbol_change": true
-            });
-        }
-
-        function changeSymbol(val) {
-            loadChart(val);
-        }
-
-        async function updateFinancials() {
-            const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
-            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
-            try {
-                const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { headers: { 'auth-token': TOKEN } });
-                const data = await res.json();
-                document.getElementById('equity').innerText = "$" + data.equity.toLocaleString();
-                document.getElementById('profit').innerText = "$" + data.profit.toLocaleString();
-                document.getElementById('balance').innerText = "$" + data.balance.toLocaleString();
-            } catch (e) { console.log("Terminal syncing..."); }
-        }
-
-        loadChart("OANDA:XAUUSD");
-        updateFinancials();
-        setInterval(updateFinancials, 60000);
-    </script>
-</body>
-</html>        </div>
-    </header>
-
-    <div class="flex flex-1 overflow-hidden">
-        
-        <main class="flex-1 bg-black relative">
-            <div id="tradingview_widget" class="h-full w-full"></div>
+            <div id="tradingview_chart" class="h-full w-full"></div>
         </main>
 
         <aside class="w-80 bg-slate-900 border-l border-slate-800 flex flex-col shrink-0">
             <div class="p-6 border-b border-slate-800">
-                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Market Execution</h3>
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 text-center">Execution Desk</h3>
                 <div class="mb-4">
-                    <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Lot Size</label>
-                    <input type="number" value="0.10" step="0.01" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-lg text-white font-mono text-sm outline-none focus:border-blue-500">
+                    <label class="text-[9px] text-slate-500 font-bold uppercase mb-1 block">Lot Size</label>
+                    <input type="number" value="0.10" step="0.01" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-lg text-white font-mono text-sm outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-xs uppercase shadow-lg shadow-green-900/20">Buy</button>
-                    <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl text-xs uppercase shadow-lg shadow-red-900/20">Sell</button>
+                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-xs uppercase transition">Buy</button>
+                    <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl text-xs uppercase transition">Sell</button>
                 </div>
             </div>
 
-            <div class="flex-1 flex flex-col overflow-hidden">
-                <div class="flex border-b border-slate-800">
-                    <button class="flex-1 py-3 text-[10px] font-bold uppercase border-b-2 border-blue-500 bg-slate-800/50">Open Positions</button>
-                    <button class="flex-1 py-3 text-[10px] font-bold uppercase text-slate-500">History</button>
-                </div>
-                <div class="flex-1 overflow-y-auto p-4 space-y-3">
-                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-[10px] font-bold text-blue-400 uppercase">XAUUSD | Buy</span>
-                            <span class="text-[10px] font-mono text-green-400">+$142.50</span>
-                        </div>
-                        <div class="flex justify-between text-[9px] text-slate-600 font-mono">
-                            <span>Size: 0.10</span>
-                            <span>Price: 2024.12</span>
-                        </div>
-                    </div>
-                    <p class="text-[9px] text-slate-600 text-center italic mt-4">Cloud sync active...</p>
+            <div class="flex-1 overflow-y-auto p-4">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Open Positions</h3>
+                <div id="positions-list" class="space-y-3">
+                    <p class="text-[9px] text-slate-600 text-center italic">Cloud sync active...</p>
                 </div>
             </div>
         </aside>
@@ -217,126 +59,38 @@
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let currentSymbol = "OANDA:XAUUSD";
-        let widget = null;
+        // Load the TradingView Chart
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "OANDA:XAUUSD",
+            "interval": "15",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "container_id": "tradingview_chart"
+        });
 
-        function initWidget(symbol) {
-            widget = new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "15",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": "#0f172a",
-                "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "container_id": "tradingview_widget"
-            });
-        }
-
-        function changeSymbol(newSymbol) {
-            currentSymbol = newSymbol;
-            initWidget(newSymbol);
-        }
-
-        async function fetchMetaApiData() {
+        // Fetch MetaApi Data (Note: Move Token to Backend later for security!)
+        async function updateStats() {
             const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
-            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
+            const TOKEN = "PASTE_YOUR_TOKEN_HERE"; // Hide this later!
+            
             try {
                 const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { 
                     headers: { 'auth-token': TOKEN } 
                 });
                 const data = await res.json();
-                document.getElementById('equity-display').innerText = "$" + data.equity.toLocaleString();
-                document.getElementById('profit-display').innerText = "$" + data.profit.toLocaleString();
+                
+                document.getElementById('equity').innerText = "$" + data.equity.toLocaleString();
+                document.getElementById('profit').innerText = "$" + data.profit.toLocaleString();
                 document.getElementById('balance').innerText = "$" + data.balance.toLocaleString();
             } catch (e) { 
-                console.log("Syncing terminal..."); 
+                console.log("Reconnecting to MetaApi..."); 
             }
         }
 
-        initWidget(currentSymbol);
-        fetchMetaApiData();
-        setInterval(fetchMetaApiData, 30000); // Update data every 30 seconds
-    </script>
-</body>
-</html>        <div class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
-            <div class="lg:col-span-3 bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
-                <div id="tradingview_chart" class="h-full w-full"></div>
-            </div>
-
-            <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6 text-center">Execution Desk</h2>
-                    <label class="text-[9px] text-slate-500 font-bold uppercase mb-2 block">Lot Size</label>
-                    <input type="number" value="0.10" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-white font-mono mb-6">
-                </div>
-
-                <div class="space-y-4">
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-5 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-green-600/10">Buy / Long</button>
-                    <button class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-red-600/10">Sell / Short</button>
-                    <p class="text-[8px] text-slate-600 text-center uppercase font-bold tracking-widest">Execution Engine v2.4</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        new TradingView.widget({
-            "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15", "theme": "dark", "style": "1", "locale": "en", "container_id": "tradingview_chart"
-        });
-
-        async function updateStats() {
-            const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
-            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
-            try {
-                const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { headers: { 'auth-token': TOKEN } });
-                const data = await res.json();
-                document.getElementById('profit-display').innerText = "$" + data.profit.toLocaleString();
-            } catch (e) { console.log("Reconnecting..."); }
-        }
-        updateStats(); setInterval(updateStats, 60000);
-    </script>
-</body>
-</html>        <div class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
-            <div class="lg:col-span-3 bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
-                <div id="tradingview_chart" class="h-full w-full"></div>
-            </div>
-
-            <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6 text-center">Execution Desk</h2>
-                    <label class="text-[9px] text-slate-500 font-bold uppercase mb-2 block">Lot Size</label>
-                    <input type="number" value="0.10" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-white font-mono mb-6">
-                </div>
-
-                <div class="space-y-4">
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-5 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-green-600/10">Buy / Long</button>
-                    <button class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-red-600/10">Sell / Short</button>
-                    <p class="text-[8px] text-slate-600 text-center uppercase font-bold tracking-widest">Execution Engine v2.4</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        new TradingView.widget({
-            "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15", "theme": "dark", "style": "1", "locale": "en", "container_id": "tradingview_chart"
-        });
-
-        async function updateStats() {
-            const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
-            const TOKEN = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA1MzcwNDUsImlkIjoiZmE0NzZlNmYtYzI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5Iiwicm9sZSI6ImFwaS1rZXkiLCJzdWIiOiJmYTQ3NmU2Zi1jI3ZC00MTBmLThkZjEtMGM0MDM5ODNiOTM5In0.YQvK-qN9p6S4N17v7HhN-7iB6eG8z-6G9y-qN9p6S4N17v7HhN-7iB6eG8z-6G9y";
-            try {
-                const res = await fetch(`https://metastats-api.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`, { headers: { 'auth-token': TOKEN } });
-                const data = await res.json();
-                document.getElementById('profit-display').innerText = "$" + data.profit.toLocaleString();
-            } catch (e) { console.log("Reconnecting..."); }
-        }
-        updateStats(); setInterval(updateStats, 60000);
+        updateStats();
+        setInterval(updateStats, 30000); // Sync every 30 seconds
     </script>
 </body>
 </html>
