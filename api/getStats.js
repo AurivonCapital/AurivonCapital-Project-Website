@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3"; 
 
     try {
-        // Switching from 'new-york' to 'london'
+        // We changed 'new-york' to 'london' here
         const response = await fetch(`https://metastats-api-v1.london.agiliumtrade.ai/users/current/accounts/${ID}/summary`, {
             headers: { 'auth-token': TOKEN }
         });
