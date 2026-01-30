@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurivon Terminal | Full Suite</title>
+    <title>Aurivon Terminal | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background-color: #020617; color: white; font-family: sans-serif; }
+        body { background-color: #020617; color: white; }
         .glass-panel { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
-        .hidden-element { display: none !important; }
+        .hidden-admin { display: none !important; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-6 md:p-10">
     <div class="max-w-7xl mx-auto">
         <div class="flex justify-between items-end mb-10 border-b border-slate-800 pb-6">
             <div>
-                <div class="text-2xl font-black italic tracking-tighter uppercase">AURIVON <span class="text-blue-600">TERMINAL</span></div>
-                <p id="welcomeUser" class="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">Syncing Records...</p>
+                <div class="text-2xl font-black italic uppercase">AURIVON <span class="text-blue-600">TERMINAL</span></div>
+                <p id="welcomeUser" class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Connecting...</p>
             </div>
             <button onclick="logout()" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Secure Logout</button>
         </div>
@@ -27,21 +27,20 @@
                 <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-4">Equity Analytic Performance</p>
                 <canvas id="performanceChart" height="150"></canvas>
             </div>
-            <div id="adminPanel" class="space-y-6 hidden-element">
+            <div id="adminPanel" class="space-y-6 hidden-admin">
                 <div class="glass-panel p-6 rounded-[2rem]">
                     <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Total Managed Equity</p>
                     <h3 id="totalEquity" class="text-3xl font-black">$0.00</h3>
                 </div>
                 <div class="glass-panel p-6 rounded-[2rem]">
-                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Firm Status</p>
-                    <h3 class="text-3xl font-black text-blue-500 italic">OPERATIONAL</h3>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Active Traders</p>
+                    <h3 id="activeCount" class="text-3xl font-black text-blue-500">0 / 20</h3>
                 </div>
             </div>
         </div>
 
-        <div class="glass-panel rounded-[2rem] overflow-hidden shadow-2xl mb-10">
-            <div class="p-6 border-b border-slate-800"><p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Live Terminal Balances</p></div>
-            <table class="w-full text-left text-sm">
+        <div class="glass-panel rounded-[2rem] overflow-hidden mb-10">
+            <table class="w-full text-left">
                 <thead class="bg-slate-900/50 text-[10px] uppercase tracking-widest text-slate-500">
                     <tr><th class="p-6">Account ID</th><th class="p-6">Status</th><th class="p-6">Balance</th><th class="p-6">Equity</th><th class="p-6 text-right">Net P/L</th></tr>
                 </thead>
@@ -50,13 +49,13 @@
         </div>
 
         <div class="glass-panel rounded-[2rem] overflow-hidden shadow-2xl">
-            <div class="p-6 border-b border-slate-800"><p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Recent Trade Memoir (Live History)</p></div>
+            <div class="p-6 border-b border-slate-800"><p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Recent Trade Memoir (History)</p></div>
             <table class="w-full text-left text-xs">
                 <thead class="bg-slate-900/50 text-[10px] uppercase tracking-widest text-slate-500">
-                    <tr><th class="p-6">Symbol</th><th class="p-6">Type</th><th class="p-6">Volume</th><th class="p-6 text-right">Net Profit</th></tr>
+                    <tr><th class="p-6">Symbol</th><th class="p-6">Type</th><th class="p-6">Volume</th><th class="p-6 text-right">Result</th></tr>
                 </thead>
                 <tbody id="history-rows" class="divide-y divide-slate-800/50">
-                    <tr><td colspan="4" class="p-10 text-center italic text-slate-500 uppercase">Synchronizing trade records...</td></tr>
+                     <tr><td colspan="4" class="p-10 text-center italic text-slate-500 uppercase">Synchronizing Records...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -66,36 +65,33 @@
         const user = JSON.parse(localStorage.getItem('currentUser'));
         if (!user) { window.location.href = "login.html"; }
         document.getElementById('welcomeUser').innerText = `Welcome, ${user.user}`;
-        if (user.role === 'admin') { document.getElementById('adminPanel').classList.remove('hidden-element'); }
+        if (user.role === 'admin') { document.getElementById('adminPanel').classList.remove('hidden-admin'); }
 
-        // Chart Setup
+        // Chart.js Mock Data (Until History is live)
         const ctx = document.getElementById('performanceChart').getContext('2d');
-        const chart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'],
-                datasets: [{ label: 'Performance', data: [50000, 50200, 50100, 50600, 50900, 51200], borderColor: '#2563eb', fill: true, tension: 0.4 }]
-            },
+            data: { labels: ['Jan', 'Feb', 'Mar', 'Apr'], datasets: [{ data: [50000, 52000, 51000, 54000], borderColor: '#2563eb', fill: true, tension: 0.4 }] },
             options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1e293b' } }, x: { grid: { display: false } } } }
         });
 
         async function updateTerminal() {
             try {
-                // Update Main Balances
                 const res = await fetch('/api/getStats');
                 const data = await res.json();
                 const tableBody = document.getElementById('trader-rows');
                 tableBody.innerHTML = '';
                 let totalEquity = 0;
+                let activeAccounts = 0;
 
                 data.forEach(item => {
                     if (user.role === 'admin' || user.account === item.accountId) {
-                        if(item.status !== "Empty Slot") { totalEquity += item.equity; }
+                        if(item.status !== "Empty Slot") { totalEquity += item.equity; activeAccounts++; }
                         const profitColor = item.profit >= 0 ? 'text-green-400' : 'text-red-400';
                         tableBody.innerHTML += `
                             <tr class="hover:bg-slate-800/30">
                                 <td class="p-6 font-mono text-[11px] text-slate-400">${item.accountId}</td>
-                                <td class="p-6 uppercase font-bold ${item.status === 'Online' ? 'text-green-500' : 'text-slate-500'}">${item.status}</td>
+                                <td class="p-6 text-[10px] font-bold ${item.status === 'Online' ? 'text-green-500' : 'text-slate-500'}">${item.status}</td>
                                 <td class="p-6 font-bold">$${item.balance.toLocaleString()}</td>
                                 <td class="p-6 text-slate-300">$${item.equity.toLocaleString()}</td>
                                 <td class="p-6 font-black text-right ${profitColor}">$${item.profit.toLocaleString()}</td>
@@ -103,32 +99,17 @@
                         `;
                     }
                 });
-                if (user.role === 'admin') { document.getElementById('totalEquity').innerText = `$${totalEquity.toLocaleString()}`; }
 
-                // Update History (Only for the first active account found)
-                const targetID = user.role === 'admin' ? data[0].accountId : user.account;
-                const histRes = await fetch(`/api/getHistory?accountId=${targetID}`);
-                const historyData = await histRes.json();
-                const historyBody = document.getElementById('history-rows');
-                historyBody.innerHTML = '';
-
-                historyData.forEach(trade => {
-                    const pColor = trade.profit >= 0 ? 'text-green-400' : 'text-red-400';
-                    historyBody.innerHTML += `
-                        <tr class="hover:bg-slate-800/30">
-                            <td class="p-6 font-bold">${trade.symbol}</td>
-                            <td class="p-6 uppercase ${trade.type.includes('BUY') ? 'text-blue-500' : 'text-red-500'}">${trade.type}</td>
-                            <td class="p-6">${trade.volume}</td>
-                            <td class="p-6 text-right font-black ${pColor}">${trade.profit >= 0 ? '+' : ''}$${trade.profit.toLocaleString()}</td>
-                        </tr>
-                    `;
-                });
+                if (user.role === 'admin') {
+                    document.getElementById('totalEquity').innerText = `$${totalEquity.toLocaleString()}`;
+                    document.getElementById('activeCount').innerText = `${activeAccounts} / 20`;
+                }
             } catch (err) { console.error(err); }
         }
 
         function logout() { localStorage.removeItem('currentUser'); window.location.href = "login.html"; }
         updateTerminal();
-        setInterval(updateTerminal, 60000);
+        setInterval(updateTerminal, 30000);
     </script>
 </body>
 </html>
