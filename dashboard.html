@@ -2,18 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Traders Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurivon Capital - Traders Dashboard</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #007bff; color: white; }
-        .positive { color: green; font-weight: bold; }
-        .negative { color: red; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 40px; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #007bff; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #007bff; color: white; text-transform: uppercase; font-size: 13px; }
+        tr:hover { background-color: #f8f9fa; }
+        .status-online { color: #28a745; font-weight: bold; }
+        .status-offline { color: #dc3545; font-weight: bold; }
+        .profit-pos { color: #28a745; font-weight: bold; }
+        .profit-neg { color: #dc3545; font-weight: bold; }
+        .loading { text-align: center; padding: 20px; font-style: italic; color: #666; }
     </style>
 </head>
 <body>
-    <h2>20 Traders Performance</h2>
+
+<div class="container">
+    <h2>Traders Performance Dashboard</h2>
     <table>
         <thead>
             <tr>
@@ -24,36 +33,46 @@
                 <th>Profit</th>
             </tr>
         </thead>
-        <tbody id="trader-data">
-            <tr><td colspan="5">Loading data... please wait.</td></tr>
+        <tbody id="trader-table-body">
+            <tr><td colspan="5" class="loading">Fetching live market data...</td></tr>
         </tbody>
     </table>
+</div>
 
-    <script>
-        async function fetchTraders() {
-            try {
-                const response = await fetch('/api/getStats');
-                const data = await response.json();
-                const tableBody = document.getElementById('trader-data');
-                tableBody.innerHTML = ''; 
+<script>
+    async function loadDashboard() {
+        const tableBody = document.getElementById('trader-table-body');
+        
+        try {
+            // This connects to your api/getStats.js
+            const response = await fetch('/api/getStats');
+            const data = await response.json();
 
-                data.forEach(trader => {
-                    const profitClass = trader.profit >= 0 ? 'positive' : 'negative';
-                    tableBody.innerHTML += `
-                        <tr>
-                            <td>${trader.accountId}</td>
-                            <td>${trader.status}</td>
-                            <td>$${trader.balance.toLocaleString()}</td>
-                            <td>$${trader.equity.toLocaleString()}</td>
-                            <td class="${profitClass}">$${trader.profit.toLocaleString()}</td>
-                        </tr>
-                    `;
-                });
-            } catch (err) {
-                document.getElementById('trader-data').innerHTML = '<tr><td colspan="5">Error loading data. Check Vercel Logs.</td></tr>';
-            }
+            tableBody.innerHTML = ''; // Clear the loading message
+
+            data.forEach(trader => {
+                const profitClass = trader.profit >= 0 ? 'profit-pos' : 'profit-neg';
+                const statusClass = trader.status === 'Online' ? 'status-online' : 'status-offline';
+                
+                const row = `
+                    <tr>
+                        <td><code>${trader.accountId}</code></td>
+                        <td class="${statusClass}">${trader.status}</td>
+                        <td>$${trader.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td>$${trader.equity.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td class="${profitClass}">$${trader.profit.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        } catch (error) {
+            tableBody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Failed to load data. Please refresh or check Vercel logs.</td></tr>';
         }
-        fetchTraders();
-    </script>
+    }
+
+    // Run the function when the page loads
+    loadDashboard();
+</script>
+
 </body>
 </html>
