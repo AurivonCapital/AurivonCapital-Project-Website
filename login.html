@@ -48,27 +48,37 @@
     </div>
 
     <script>
-        /**
-         * The Login Logic
-         * This checks if the entered ID and Key match your list.
-         */
         function checkAccess() {
             const idInput = document.getElementById('traderID').value;
             const passInput = document.getElementById('accessKey').value;
             const errorElement = document.getElementById('errorMsg');
 
-            // --- AUTHORIZED TRADERS LIST ---
-            // You can add more people here by following the pattern.
             const authorized = [
                 { user: "GohKeeYiong", pass: "Aurivon2026" },
                 { user: "SuperAdmin", pass: "Master88" }
             ];
 
-            // Check if the typed info matches anyone in our list
             const isValid = authorized.some(person => person.user === idInput && person.pass === passInput);
 
             if (isValid) {
-                // If correct, go to dashboard
                 window.location.href = "dashboard.html";
             } else {
-                // If wrong,
+                errorElement.classList.remove('hidden');
+                setTimeout(() => errorElement.classList.add('hidden'), 3000);
+            }
+        }
+
+        particlesJS("particles-js", {
+            "particles": { 
+                "number": { "value": 40 }, 
+                "color": { "value": "#2563eb" }, 
+                "shape": { "type": "circle" }, 
+                "opacity": { "value": 0.3 }, 
+                "size": { "value": 4 }, 
+                "line_linked": { "enable": true, "distance": 150, "color": "#2563eb", "opacity": 0.2, "width": 1 }, 
+                "move": { "enable": true, "speed": 1 } 
+            }
+        });
+    </script>
+</body>
+</html>
