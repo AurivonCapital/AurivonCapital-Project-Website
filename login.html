@@ -23,11 +23,11 @@
             <div class="space-y-6">
                 <div>
                     <label class="text-[10px] text-slate-500 uppercase font-bold tracking-widest block mb-2">Trader ID</label>
-                    <input id="traderID" type="text" placeholder="Enter ID" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
+                    <input id="traderID" type="text" autocomplete="off" placeholder="Enter ID" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
                 </div>
                 <div>
                     <label class="text-[10px] text-slate-500 uppercase font-bold tracking-widest block mb-2">Access Key</label>
-                    <input id="accessKey" type="password" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
+                    <input id="accessKey" type="password" autocomplete="new-password" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
                 </div>
                 <button onclick="checkAccess()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl uppercase tracking-widest transition shadow-lg shadow-blue-600/20">Access Terminal</button>
                 <p id="errorMsg" class="text-red-500 text-[10px] font-bold uppercase text-center hidden">Invalid Trader Credentials</p>
@@ -39,16 +39,11 @@
         function checkAccess() {
             const idInput = document.getElementById('traderID').value;
             const passInput = document.getElementById('accessKey').value;
-
-            // --- THE TRADER DATABASE ---
-            // Add new traders here after they purchase the evaluation.
             const authorized = [
                 { user: "SuperAdmin", pass: "Master88", role: "admin", account: "ALL" },
                 { user: "GohKeeYiong", pass: "Aurivon2026", role: "trader", account: "d769e348-5db8-4df0-97f9-5b45bdb8b8c3" }
             ];
-
             const person = authorized.find(p => p.user === idInput && p.pass === passInput);
-
             if (person) {
                 localStorage.setItem('currentUser', JSON.stringify(person));
                 window.location.href = "dashboard.html";
