@@ -1,0 +1,7 @@
+{
+  "name": "aurivon-capital-dashboard",
+  "version": "1.0.0",
+  "dependencies": {
+    "metaapi.cloud-sdk": "^13.0.0"
+  }
+}
