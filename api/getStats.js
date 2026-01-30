@@ -1,31 +1,27 @@
 export default async function handler(req, res) {
-    const TOKEN = process.env.METAAPI_TOKEN;
-    const ID = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
+  const token = process.env.METAAPI_TOKEN;
+  const accountId = "d769e348-5db8-4df0-97f9-5b45bdb8b8c3";
+  
+  // List of all possible offices
+  const regions = ['new-york', 'london', 'singapore'];
+
+  for (let region of regions) {
+    const url = `https://metastats-api-v1.${region}.agiliumtrade.ai/users/current/accounts/${accountId}/summary`;
     
     try {
-        // Targeted to 'new-york' because your dashboard says 'cloud-g2'
-        const url = `https://metastats-api-v1.new-york.agiliumtrade.ai/users/current/accounts/${ID}/summary`;
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: { 
-                'auth-token': TOKEN,
-                'Accept': 'application/json'
-            }
-        });
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { 'auth-token': token }
+      });
 
+      if (response.status === 200) {
         const data = await response.json();
-
-        if (!response.ok) {
-            return res.status(response.status).json({
-                error: "MetaApi Server Error",
-                details: data
-            });
-        }
-
-        // This will finally return your Balance, Equity, and Profit
-        return res.status(200).json(data);
-    } catch (error) {
-        return res.status(500).json({ error: "Bridge Failed", message: error.message });
+        return res.status(200).json({ regionFound: region, ...data });
+      }
+    } catch (err) {
+      // If one office fails, it just tries the next one
     }
+  }
+
+  return res.status(404).json({ error: "Still not found in any region. Check MetaStats is enabled on dashboard." });
 }
