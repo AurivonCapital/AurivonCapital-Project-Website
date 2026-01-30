@@ -3,113 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurivon Terminal | Institutional Dashboard</title>
+    <title>Aurivon Terminal | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #020617; color: white; font-family: sans-serif; }
         .glass-panel { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
-        .status-online { color: #22c55e; }
-        .status-offline { color: #64748b; }
+        .hidden-element { display: none !important; }
     </style>
 </head>
 <body class="p-4 md:p-10">
-
     <div class="max-w-7xl mx-auto">
         <div class="flex justify-between items-end mb-10 border-b border-slate-800 pb-6">
             <div>
-                <div class="text-2xl font-black italic tracking-tighter text-white uppercase">AURIVON <span class="text-blue-600">TERMINAL</span></div>
-                <p class="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">Institutional Asset Monitoring</p>
+                <div class="text-2xl font-black italic tracking-tighter uppercase">AURIVON <span class="text-blue-600">TERMINAL</span></div>
+                <p id="welcomeUser" class="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">Initializing...</p>
             </div>
             <div class="text-right">
-                <p id="lastUpdate" class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Live Syncing...</p>
+                <button onclick="logout()" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Secure Logout</button>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div id="adminPanel" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 hidden-element">
             <div class="glass-panel p-6 rounded-3xl">
                 <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Total Managed Equity</p>
                 <h3 id="totalEquity" class="text-3xl font-black">$0.00</h3>
             </div>
             <div class="glass-panel p-6 rounded-3xl">
-                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Active Accounts</p>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Active Firm Accounts</p>
                 <h3 id="activeCount" class="text-3xl font-black text-blue-500">0 / 20</h3>
-            </div>
-            <div class="glass-panel p-6 rounded-3xl text-right">
-                <a href="login.html" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Secure Logout</a>
             </div>
         </div>
 
         <div class="glass-panel rounded-[2rem] overflow-hidden shadow-2xl">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-900/50 text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-800">
-                        <tr>
-                            <th class="p-6">Trader Account ID</th>
-                            <th class="p-6">Signal Status</th>
-                            <th class="p-6">Current Balance</th>
-                            <th class="p-6">Floating Equity</th>
-                            <th class="p-6 text-right">Net Profit/Loss</th>
-                        </tr>
-                    </thead>
-                    <tbody id="trader-rows" class="divide-y divide-slate-800/50">
-                        </tbody>
-                </table>
-            </div>
+            <table class="w-full text-left">
+                <thead class="bg-slate-900/50 text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-800">
+                    <tr>
+                        <th class="p-6">Account ID</th>
+                        <th class="p-6">Status</th>
+                        <th class="p-6">Balance</th>
+                        <th class="p-6">Equity</th>
+                        <th class="p-6 text-right">Net P/L</th>
+                    </tr>
+                </thead>
+                <tbody id="trader-rows" class="divide-y divide-slate-800/50"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (!user) { window.location.href = "login.html"; }
+
+        document.getElementById('welcomeUser').innerText = `Welcome, ${user.user}`;
+        if (user.role === 'admin') { document.getElementById('adminPanel').classList.remove('hidden-element'); }
+
         async function updateTerminal() {
             try {
                 const res = await fetch('/api/getStats');
                 const data = await res.json();
-                
                 const tableBody = document.getElementById('trader-rows');
-                const equityEl = document.getElementById('totalEquity');
-                const activeEl = document.getElementById('activeCount');
-                const updateEl = document.getElementById('lastUpdate');
+                tableBody.innerHTML = '';
 
                 let totalEquity = 0;
                 let activeAccounts = 0;
-                tableBody.innerHTML = '';
 
                 data.forEach(item => {
-                    if(item.status !== "Empty Slot") {
-                        activeAccounts++;
-                        totalEquity += item.equity;
+                    // Logic: Show all if Admin, OR show only if ID matches the Trader's assigned ID
+                    if (user.role === 'admin' || user.account === item.accountId) {
+                        if(item.status !== "Empty Slot") {
+                            activeAccounts++;
+                            totalEquity += item.equity;
+                        }
+
+                        const profitColor = item.profit >= 0 ? 'text-green-400' : 'text-red-400';
+                        tableBody.innerHTML += `
+                            <tr class="hover:bg-slate-800/30 transition">
+                                <td class="p-6 font-mono text-[11px] text-slate-400">${item.accountId}</td>
+                                <td class="p-6 text-[11px] uppercase font-bold ${item.status === 'Online' ? 'text-green-500' : 'text-slate-500'}">${item.status}</td>
+                                <td class="p-6 text-sm font-bold font-mono">$${item.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                                <td class="p-6 text-sm text-slate-300 font-mono">$${item.equity.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                                <td class="p-6 text-sm font-black text-right ${profitColor} font-mono">${item.profit >= 0 ? '+' : ''}$${item.profit.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            </tr>
+                        `;
                     }
-
-                    const profitColor = item.profit >= 0 ? 'text-green-400' : 'text-red-400';
-                    const statusDot = item.status === 'Online' ? '●' : '○';
-                    const statusClass = item.status === 'Online' ? 'status-online' : 'status-offline';
-
-                    tableBody.innerHTML += `
-                        <tr class="hover:bg-slate-800/30 transition">
-                            <td class="p-6 font-mono text-[11px] text-slate-400">${item.accountId}</td>
-                            <td class="p-6 text-[11px] uppercase font-bold ${statusClass}">
-                                <span class="mr-2">${statusDot}</span> ${item.status}
-                            </td>
-                            <td class="p-6 text-sm font-bold font-mono">$${item.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                            <td class="p-6 text-sm text-slate-300 font-mono">$${item.equity.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                            <td class="p-6 text-sm font-black text-right ${profitColor} font-mono">
-                                ${item.profit >= 0 ? '+' : ''}$${item.profit.toLocaleString(undefined, {minimumFractionDigits: 2})}
-                            </td>
-                        </tr>
-                    `;
                 });
 
-                equityEl.innerText = `$${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                activeEl.innerText = `${activeAccounts} / 20`;
-                updateEl.innerText = `LAST SYNC: ${new Date().toLocaleTimeString()}`;
-
-            } catch (err) {
-                console.error("Sync Error:", err);
-            }
+                if (user.role === 'admin') {
+                    document.getElementById('totalEquity').innerText = `$${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                    document.getElementById('activeCount').innerText = `${activeAccounts} / 20`;
+                }
+            } catch (err) { console.error(err); }
         }
 
-        // Initial Load
+        function logout() { localStorage.removeItem('currentUser'); window.location.href = "login.html"; }
         updateTerminal();
-        // Sync every 30 seconds
         setInterval(updateTerminal, 30000);
     </script>
 </body>
