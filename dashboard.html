@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurivon Terminal | Analytics</title>
+    <title>Aurivon Terminal | Full Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -17,7 +17,7 @@
         <div class="flex justify-between items-end mb-10 border-b border-slate-800 pb-6">
             <div>
                 <div class="text-2xl font-black italic tracking-tighter uppercase">AURIVON <span class="text-blue-600">TERMINAL</span></div>
-                <p id="welcomeUser" class="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">Loading Intelligence...</p>
+                <p id="welcomeUser" class="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">Syncing Records...</p>
             </div>
             <button onclick="logout()" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Secure Logout</button>
         </div>
@@ -33,15 +33,15 @@
                     <h3 id="totalEquity" class="text-3xl font-black">$0.00</h3>
                 </div>
                 <div class="glass-panel p-6 rounded-[2rem]">
-                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Firm Success Rate</p>
-                    <h3 class="text-3xl font-black text-blue-500">94.2%</h3>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-2">Firm Status</p>
+                    <h3 class="text-3xl font-black text-blue-500 italic">OPERATIONAL</h3>
                 </div>
             </div>
         </div>
 
         <div class="glass-panel rounded-[2rem] overflow-hidden shadow-2xl mb-10">
             <div class="p-6 border-b border-slate-800"><p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Live Terminal Balances</p></div>
-            <table class="w-full text-left">
+            <table class="w-full text-left text-sm">
                 <thead class="bg-slate-900/50 text-[10px] uppercase tracking-widest text-slate-500">
                     <tr><th class="p-6">Account ID</th><th class="p-6">Status</th><th class="p-6">Balance</th><th class="p-6">Equity</th><th class="p-6 text-right">Net P/L</th></tr>
                 </thead>
@@ -50,14 +50,13 @@
         </div>
 
         <div class="glass-panel rounded-[2rem] overflow-hidden shadow-2xl">
-            <div class="p-6 border-b border-slate-800"><p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Recent Trade Memoir (History)</p></div>
-            <table class="w-full text-left">
+            <div class="p-6 border-b border-slate-800"><p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Recent Trade Memoir (Live History)</p></div>
+            <table class="w-full text-left text-xs">
                 <thead class="bg-slate-900/50 text-[10px] uppercase tracking-widest text-slate-500">
-                    <tr><th class="p-6">Symbol</th><th class="p-6">Type</th><th class="p-6">Volume</th><th class="p-6 text-right">Result</th></tr>
+                    <tr><th class="p-6">Symbol</th><th class="p-6">Type</th><th class="p-6">Volume</th><th class="p-6 text-right">Net Profit</th></tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/50 text-xs">
-                    <tr><td class="p-6 font-bold">XAUUSD</td><td class="p-6 text-blue-500">BUY</td><td class="p-6">2.00</td><td class="p-6 text-right text-green-400">+$1,240.00</td></tr>
-                    <tr><td class="p-6 font-bold">XAUUSD</td><td class="p-6 text-red-500">SELL</td><td class="p-6">1.50</td><td class="p-6 text-right text-green-400">+$850.20</td></tr>
+                <tbody id="history-rows" class="divide-y divide-slate-800/50">
+                    <tr><td colspan="4" class="p-10 text-center italic text-slate-500 uppercase">Synchronizing trade records...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -69,26 +68,20 @@
         document.getElementById('welcomeUser').innerText = `Welcome, ${user.user}`;
         if (user.role === 'admin') { document.getElementById('adminPanel').classList.remove('hidden-element'); }
 
-        // Analytic Chart Logic
+        // Chart Setup
         const ctx = document.getElementById('performanceChart').getContext('2d');
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Equity Growth',
-                    data: [50000, 52000, 51500, 54000, 58000, 62000],
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
+                labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'],
+                datasets: [{ label: 'Performance', data: [50000, 50200, 50100, 50600, 50900, 51200], borderColor: '#2563eb', fill: true, tension: 0.4 }]
             },
             options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1e293b' } }, x: { grid: { display: false } } } }
         });
 
         async function updateTerminal() {
             try {
+                // Update Main Balances
                 const res = await fetch('/api/getStats');
                 const data = await res.json();
                 const tableBody = document.getElementById('trader-rows');
@@ -100,23 +93,42 @@
                         if(item.status !== "Empty Slot") { totalEquity += item.equity; }
                         const profitColor = item.profit >= 0 ? 'text-green-400' : 'text-red-400';
                         tableBody.innerHTML += `
-                            <tr class="hover:bg-slate-800/30 transition">
+                            <tr class="hover:bg-slate-800/30">
                                 <td class="p-6 font-mono text-[11px] text-slate-400">${item.accountId}</td>
-                                <td class="p-6 text-[11px] uppercase font-bold ${item.status === 'Online' ? 'text-green-500' : 'text-slate-500'}">${item.status}</td>
-                                <td class="p-6 text-sm font-bold font-mono">$${item.balance.toLocaleString()}</td>
-                                <td class="p-6 text-sm text-slate-300 font-mono">$${item.equity.toLocaleString()}</td>
-                                <td class="p-6 text-sm font-black text-right ${profitColor} font-mono">$${item.profit.toLocaleString()}</td>
+                                <td class="p-6 uppercase font-bold ${item.status === 'Online' ? 'text-green-500' : 'text-slate-500'}">${item.status}</td>
+                                <td class="p-6 font-bold">$${item.balance.toLocaleString()}</td>
+                                <td class="p-6 text-slate-300">$${item.equity.toLocaleString()}</td>
+                                <td class="p-6 font-black text-right ${profitColor}">$${item.profit.toLocaleString()}</td>
                             </tr>
                         `;
                     }
                 });
                 if (user.role === 'admin') { document.getElementById('totalEquity').innerText = `$${totalEquity.toLocaleString()}`; }
+
+                // Update History (Only for the first active account found)
+                const targetID = user.role === 'admin' ? data[0].accountId : user.account;
+                const histRes = await fetch(`/api/getHistory?accountId=${targetID}`);
+                const historyData = await histRes.json();
+                const historyBody = document.getElementById('history-rows');
+                historyBody.innerHTML = '';
+
+                historyData.forEach(trade => {
+                    const pColor = trade.profit >= 0 ? 'text-green-400' : 'text-red-400';
+                    historyBody.innerHTML += `
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-6 font-bold">${trade.symbol}</td>
+                            <td class="p-6 uppercase ${trade.type.includes('BUY') ? 'text-blue-500' : 'text-red-500'}">${trade.type}</td>
+                            <td class="p-6">${trade.volume}</td>
+                            <td class="p-6 text-right font-black ${pColor}">${trade.profit >= 0 ? '+' : ''}$${trade.profit.toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
             } catch (err) { console.error(err); }
         }
 
         function logout() { localStorage.removeItem('currentUser'); window.location.href = "login.html"; }
         updateTerminal();
-        setInterval(updateTerminal, 30000);
+        setInterval(updateTerminal, 60000);
     </script>
 </body>
 </html>
