@@ -3,85 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurivon Capital | Institutional Grit</title>
+    <title>Aurivon Terminal | Professional Trader Desktop</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
-        #particles-js { position: absolute; width: 100%; height: 100%; background-color: #0f172a; z-index: -1; }
-        .hero-section { position: relative; overflow: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { background-color: #020617; color: white; font-family: 'Inter', sans-serif; }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(16px); }
+        .trading-btn { transition: all 0.2s; border: 1px solid transparent; }
+        .trading-btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
+        .hidden-admin { display: none !important; }
+        canvas { max-height: 200px !important; width: 100% !important; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans">
-
-    <nav class="p-6 bg-white border-b flex justify-between items-center sticky top-0 z-50">
-        <div class="text-2xl font-black italic tracking-tighter text-slate-900">AURIVON <span class="text-blue-600">CAPITAL</span></div>
-        <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-slate-500">
-            <a href="index.html" class="text-blue-600">Home</a>
-            <a href="about.html" class="hover:text-slate-900 transition">Memoir</a>
-            <a href="strategy.html" class="hover:text-slate-900 transition">Recruitment</a>
-            <a href="login.html" class="hover:text-slate-900 transition">Trader Login</a>
-        </div>
-        <a href="https://t.me/YOUR_LINK" class="bg-slate-900 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest">Global Desk</a>
-    </nav>
-
-    <header class="hero-section py-32 px-6 text-white text-center min-h-[70vh] flex flex-col justify-center items-center">
-        <div id="particles-js"></div>
-        <div class="relative z-10 max-w-4xl">
-            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6 uppercase italic leading-none">
-                Grit. Discipline. <br><span class="text-blue-500">Aurivon.</span>
-            </h1>
-            <p class="text-slate-400 text-lg max-w-3xl mx-auto mb-10 italic">
-                Institutional Proprietary Trading. Master the gold market with $50,000 in funded capital.
-            </p>
-            <a href="#evaluation" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest transition">
-                View Evaluation
-            </a>
-        </div>
-    </header>
-
-    <section id="evaluation" class="py-24 bg-slate-900 text-white text-center px-6">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-xs font-bold text-blue-500 uppercase tracking-[0.4em] mb-4">The Gatekeeper</h2>
-            <h3 class="text-5xl font-black mb-6 italic tracking-tighter uppercase leading-tight">Project Cheetah Evaluation</h3>
-            <p class="text-slate-400 mb-12 max-w-lg mx-auto">Direct access to Aurivon capital. Pass the evaluation and join the inner circle.</p>
-            
-            <div class="bg-slate-800 p-10 rounded-[3rem] border border-slate-700 inline-block w-full max-w-sm shadow-2xl relative">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 px-4 py-1 rounded text-[10px] font-bold uppercase">Institutional Tier</div>
-                <p class="text-blue-400 font-bold uppercase text-[10px] tracking-widest mb-4">Standard Account</p>
-                <p class="text-5xl font-black mb-8">$185.00 <span class="text-xs font-normal text-slate-500 uppercase">SGD</span></p>
-                
-                <div class="text-left space-y-4 mb-10">
-                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> $50,000 Funded Capital</div>
-                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> 10% Profit Target</div>
-                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> 8% Maximum Drawdown</div>
-                </div>
-
-                <a href="YOUR_STRIPE_LINK_HERE" class="block w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold uppercase tracking-widest transition-all">
-                    Start Your Evaluation Phase 1
-                </a>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-8 border-b border-slate-800 pb-6">
+            <div>
+                <div class="text-2xl font-black italic uppercase tracking-tighter">AURIVON <span class="text-blue-600">TERMINAL</span></div>
+                <p id="welcomeUser" class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Initializing Secure Session...</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <select id="symbolSelect" onchange="changeSymbol(this.value)" class="bg-slate-900 border border-slate-700 text-xs p-2 rounded text-blue-400 font-bold uppercase outline-none">
+                    <option value="FX:EURUSD">EURUSD</option>
+                    <option value="FX:GBPUSD">GBPUSD</option>
+                    <option value="OANDA:XAUUSD">XAUUSD (Gold)</option>
+                </select>
+                <button onclick="logout()" class="text-[10px] text-red-500 font-bold uppercase hover:bg-red-500/10 p-2 rounded transition">Logout</button>
             </div>
         </div>
-    </section>
 
-    <footer class="p-12 text-center bg-white border-t border-slate-100">
-        <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-2">&copy; 2026 Aurivon Capital</p>
-        <a href="disclaimer.html" class="text-[10px] text-blue-600 font-bold uppercase hover:underline">Risk Disclaimer & Legal</a>
-    </footer>
+        <div class="grid grid-cols-1 gap-6 mb-8">
+            <div class="glass-panel rounded-[1.5rem] overflow-hidden relative border border-white/5 shadow-2xl">
+                <div class="absolute top-4 right-4 z-10 flex gap-2">
+                    <button class="trading-btn bg-red-600 px-6 py-2 rounded-lg font-black text-sm uppercase shadow-lg shadow-red-900/20">Sell</button>
+                    <button class="trading-btn bg-green-600 px-6 py-2 rounded-lg font-black text-sm uppercase shadow-lg shadow-green-900/20">Buy</button>
+                </div>
+                <div id="tradingview_widget" class="h-[500px]"></div>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-[2rem] overflow-hidden mb-8 border border-white/5">
+            <div class="p-5 border-b border-slate-800/50 flex justify-between items-center bg-white/5">
+                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-[0.2em]">Open Positions & Risk Management</p>
+                <div id="adminPanel" class="hidden-admin flex gap-6">
+                     <span class="text-[10px] text-blue-400 font-bold uppercase">Total Pool: <span id="totalEquity" class="text-white ml-1">$0.00</span></span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-900/80 text-[10px] uppercase tracking-widest text-slate-500">
+                        <tr>
+                            <th class="p-5">Account Status</th>
+                            <th class="p-5">Connectivity</th>
+                            <th class="p-5">Balance</th>
+                            <th class="p-5">Equity</th>
+                            <th class="p-5 text-right">Profit / Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trader-rows" class="divide-y divide-slate-800/30">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="glass-panel p-6 rounded-[2rem]">
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-6">Equity Performance</p>
+                <div class="relative h-[180px]">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+            <div class="glass-panel p-6 rounded-[2rem]">
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-6">Drawdown Analysis (%)</p>
+                <div class="relative h-[180px]">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+            <div class="glass-panel p-6 rounded-[2rem]">
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-6">Asset Exposure</p>
+                <div class="relative h-[180px]">
+                    <canvas id="pairPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#2563eb" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5 },
-                "size": { "value": 1, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#2563eb", "opacity": 0.4, "width": 1 },
-                "move": { "enable": true, "speed": 2 }
-            },
-            "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" } } },
-            "retina_detect": true
-        });
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (!user) { window.location.href = "login.html"; }
+        document.getElementById('welcomeUser').innerText = `SESSION ACTIVE: ${user.user}`;
+        if (user.role === 'admin') { document.getElementById('adminPanel').classList.remove('hidden-admin'); }
+
+        // --- GLOBAL CHART VARIABLES ---
+        let perfChart, riskBarChart, exposurePieChart;
+
+        // --- INITIALIZE REFINED CHARTS ---
+        function initCharts() {
+            const commonScales = {
+                y: { grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false }, ticks: { color: '#475569', font: { size: 9 } } },
+                x: { grid: { display: false }, ticks: { color: '#475569', font: { size: 9 } } }
+            };
+
+            // Performance Line
+            perfChart = new Chart(document.getElementById('performanceChart'), {
+                type: 'line',
+                data: { labels: ['Start', 'Current'], datasets: [{ label: 'Equity', data: [0, 0], borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.05)', pointRadius: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: commonScales }
+            });
+
+            // Drawdown Bar (Refined)
+            riskBarChart = new Chart(document.getElementById('riskChart'), {
+                type: 'bar',
+                data: { labels: ['Max DD', 'Current DD'], datasets: [{ data: [0, 0], backgroundColor: '#ef4444', borderRadius: 6, barThickness: 20 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: commonScales }
+            });
+
+            // Asset Pie (Doughnut style)
+            exposurePieChart = new Chart(document.getElementById('pairPieChart'), {
+                type: 'doughnut',
+                data: { labels: ['EURUSD', 'Other'], datasets: [{ data: [100, 0], backgroundColor: ['#3b82f6', '#1e293b'], borderWeight: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '82%', plugins: { legend: { position: 'bottom', labels: { color: '#64748b', usePointStyle: true, font: { size: 9 } } } } }
+            });
+        }
+
+        // --- UPDATE CHARTS WITH REAL DATA ---
+        function updateAnalytics(balance, equity) {
+            const drawdown = (((balance - equity) / balance) * 100).toFixed(2);
+            
+            // Update Line Chart
+            perfChart.data.datasets[0].data = [balance, equity];
+            perfChart.update();
+
+            // Update Bar Chart
+            riskBarChart.data.datasets[0].data = [5.0, drawdown]; // 5% as a "Max Limit" reference
+            riskBarChart.update();
+        }
+
+        async function updateTerminal() {
+            try {
+                const res = await fetch('/api/getStats'); 
+                const data = await res.json();
+                const tableBody = document.getElementById('trader-rows');
+                tableBody.innerHTML = '';
+                
+                let totalEq = 0;
+
+                data.forEach(item => {
+                    if (user.role === 'admin' || user.account === item.accountId) {
+                        totalEq += item.equity;
+                        const isUp = item.profit >= 0;
+                        
+                        // Push real data to charts
+                        updateAnalytics(item.balance, item.equity);
+
+                        tableBody.innerHTML += `
+                            <tr class="hover:bg-white/[0.02] transition border-b border-slate-800/30">
+                                <td class="p-5 font-bold text-xs">EIGHTCAP_LIVE</td>
+                                <td class="p-5"><span class="text-[10px] ${item.status === 'Online' ? 'text-green-500' : 'text-slate-500'} font-bold uppercase">● ${item.status}</span></td>
+                                <td class="p-5 font-bold text-xs">$${item.balance.toLocaleString()}</td>
+                                <td class="p-5 text-slate-400 text-xs">$${item.equity.toLocaleString()}</td>
+                                <td class="p-5 text-right">
+                                    <div class="flex items-center justify-end gap-3">
+                                        <span class="font-black text-sm ${isUp ? 'text-green-400' : 'text-red-400'}">$${item.profit.toLocaleString()}</span>
+                                        <div class="flex gap-1 bg-slate-900 p-1 rounded border border-white/5">
+                                            <input id="lots-${item.positionId}" type="number" step="0.01" placeholder="Lots" class="bg-transparent text-[10px] w-10 text-center text-blue-400 outline-none">
+                                            <button onclick="closeTrade('${item.accountId}', '${item.positionId}')" class="bg-red-600/20 text-red-500 px-2 py-1 rounded text-[9px] font-black hover:bg-red-600 hover:text-white transition">CLOSE</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`;
+                    }
+                });
+
+                if (user.role === 'admin') document.getElementById('totalEquity').innerText = `$${totalEq.toLocaleString()}`;
+            } catch (err) { console.error("Sync Error"); }
+        }
+
+        function loadChart(symbol = "FX:EURUSD") {
+            new TradingView.widget({ "autosize": true, "symbol": symbol, "interval": "60", "timezone": "Etc/UTC", "theme": "dark", "style": "1", "container_id": "tradingview_widget", "backgroundColor": "rgba(2, 6, 23, 1)", "gridColor": "rgba(30, 41, 59, 1)" });
+        }
+
+        function changeSymbol(newSym) { loadChart(newSym); }
+        function logout() { localStorage.removeItem('currentUser'); window.location.href = "login.html"; }
+
+        // Initialize Everything
+        initCharts();
+        loadChart();
+        updateTerminal();
+        setInterval(updateTerminal, 30000);
     </script>
 </body>
 </html>
