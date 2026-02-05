@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         name: `Trader: ${traderEmail}`,
         type: 'cloud',
         plan: 'v1',
-        provisioningProfileId: 'YOUR_PROVISIONING_PROFILE_ID', // You get this from MetaApi
+        provisioningProfileId: '51365c22-c0d0-4e35-9f25-1a386bf140bb', // You get this from MetaApi
         login: '123456', // Replace with a login from your pool
         password: 'YourPassword',
         server: 'ICMarkets-Demo01'
