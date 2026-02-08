@@ -3,75 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trader Login | Aurivon Capital</title>
+    <title>Aurivon Capital | Institutional Grit</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
-        body { background-color: #020617; color: white; font-family: sans-serif; }
-        .login-card { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        #particles-js { position: absolute; width: 100%; height: 100%; background-color: #0f172a; z-index: -1; }
+        .hero-section { position: relative; overflow: hidden; }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-md px-6">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-black italic uppercase tracking-tighter">AURIVON <span class="text-blue-600">CAPITAL</span></h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-2">Institutional Terminal Access</p>
+<body class="bg-slate-50 text-slate-900 font-sans">
+
+    <nav class="p-6 bg-white border-b flex justify-between items-center sticky top-0 z-50">
+        <div class="text-2xl font-black italic tracking-tighter text-slate-900">AURIVON <span class="text-blue-600">CAPITAL</span></div>
+        <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-slate-500">
+            <a href="index.html" class="text-blue-600">Home</a>
+            <a href="about.html" class="hover:text-slate-900 transition">Memoir</a>
+            <a href="strategy.html" class="hover:text-slate-900 transition">Recruitment</a>
+            <a href="login.html" class="hover:text-slate-900 transition">Trader Login</a>
         </div>
-        <div class="login-card p-10 rounded-[2.5rem] shadow-2xl">
-            <div class="space-y-6">
-                <div>
-                    <label class="text-[10px] text-slate-500 uppercase font-bold tracking-widest block mb-2">Trader ID</label>
-                    <input id="traderID" type="text" autocomplete="off" placeholder="Enter ID" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
+        <a href="https://t.me/YOUR_LINK" class="bg-slate-900 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest">Global Desk</a>
+    </nav>
+
+    <header class="hero-section py-32 px-6 text-white text-center min-h-[70vh] flex flex-col justify-center items-center">
+        <div id="particles-js"></div>
+        <div class="relative z-10 max-w-4xl">
+            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6 uppercase italic leading-none">
+                Grit. Discipline. <br><span class="text-blue-500">Aurivon.</span>
+            </h1>
+            <p class="text-slate-400 text-lg max-w-3xl mx-auto mb-10 italic">
+                Institutional Proprietary Trading. Master the gold market with $50,000 in funded capital.
+            </p>
+            <a href="#evaluation" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest transition">
+                View Evaluation
+            </a>
+        </div>
+    </header>
+
+    <section id="evaluation" class="py-24 bg-slate-900 text-white text-center px-6">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-xs font-bold text-blue-500 uppercase tracking-[0.4em] mb-4">The Gatekeeper</h2>
+            <h3 class="text-5xl font-black mb-6 italic tracking-tighter uppercase leading-tight">Project Cheetah Evaluation</h3>
+            <p class="text-slate-400 mb-12 max-w-lg mx-auto">Direct access to Aurivon capital. Pass the evaluation and join the inner circle.</p>
+            
+            <div class="bg-slate-800 p-10 rounded-[3rem] border border-slate-700 inline-block w-full max-w-sm shadow-2xl relative">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 px-4 py-1 rounded text-[10px] font-bold uppercase">Institutional Tier</div>
+                <p class="text-blue-400 font-bold uppercase text-[10px] tracking-widest mb-4">Standard Account</p>
+                <p class="text-5xl font-black mb-8">$185.00 <span class="text-xs font-normal text-slate-500 uppercase">SGD</span></p>
+                
+                <div class="text-left space-y-4 mb-10">
+                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> $50,000 Funded Capital</div>
+                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> 10% Profit Target</div>
+                    <div class="flex items-center text-sm text-slate-300"><span class="text-blue-500 mr-3">✓</span> 8% Maximum Drawdown</div>
                 </div>
-                <div>
-                    <label class="text-[10px] text-slate-500 uppercase font-bold tracking-widest block mb-2">Access Key</label>
-                    <input id="accessKey" type="password" autocomplete="new-password" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
-                </div>
-                <button onclick="checkAccess()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl uppercase tracking-widest transition shadow-lg shadow-blue-600/20">Access Terminal</button>
-                <p id="errorMsg" class="text-red-500 text-[10px] font-bold uppercase text-center hidden">Invalid Trader Credentials</p>
+
+                <a href="YOUR_STRIPE_LINK_HERE" class="block w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold uppercase tracking-widest transition-all">
+                    Start Your Evaluation Phase 1
+                </a>
             </div>
         </div>
-    </div>
+    </section>
+
+    <footer class="p-12 text-center bg-white border-t border-slate-100">
+        <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-2">&copy; 2026 Aurivon Capital</p>
+        <a href="disclaimer.html" class="text-[10px] text-blue-600 font-bold uppercase hover:underline">Risk Disclaimer & Legal</a>
+    </footer>
 
     <script>
-        function checkAccess() {
-            const idInput = document.getElementById('traderID').value;
-            const passInput = document.getElementById('accessKey').value;
-
-            // --- THE 20-TRADER SECURE DATABASE ---
-            // Update these slots as you sell evaluations. 
-            // Role 'admin' sees all. Role 'trader' sees ONLY their assigned account.
-            const authorized = [
-                { user: "SuperAdmin", pass: "Master88", role: "admin", account: "ALL" },
-                { user: "GohKeeYiong", pass: "Aurivon2026", role: "trader", account: "d769e348-5db8-4df0-97f9-5b45bdb8b8c3" },
-                { user: "Trader_3", pass: "PASS_3", role: "trader", account: "ACCOUNT_ID_3" },
-                { user: "Trader_4", pass: "PASS_4", role: "trader", account: "ACCOUNT_ID_4" },
-                { user: "Trader_5", pass: "PASS_5", role: "trader", account: "ACCOUNT_ID_5" },
-                { user: "Trader_6", pass: "PASS_6", role: "trader", account: "ACCOUNT_ID_6" },
-                { user: "Trader_7", pass: "PASS_7", role: "trader", account: "ACCOUNT_ID_7" },
-                { user: "Trader_8", pass: "PASS_8", role: "trader", account: "ACCOUNT_ID_8" },
-                { user: "Trader_9", pass: "PASS_9", role: "trader", account: "ACCOUNT_ID_9" },
-                { user: "Trader_10", pass: "PASS_10", role: "trader", account: "ACCOUNT_ID_10" },
-                { user: "Trader_11", pass: "PASS_11", role: "trader", account: "ACCOUNT_ID_11" },
-                { user: "Trader_12", pass: "PASS_12", role: "trader", account: "ACCOUNT_ID_12" },
-                { user: "Trader_13", pass: "PASS_13", role: "trader", account: "ACCOUNT_ID_13" },
-                { user: "Trader_14", pass: "PASS_14", role: "trader", account: "ACCOUNT_ID_14" },
-                { user: "Trader_15", pass: "PASS_15", role: "trader", account: "ACCOUNT_ID_15" },
-                { user: "Trader_16", pass: "PASS_16", role: "trader", account: "ACCOUNT_ID_16" },
-                { user: "Trader_17", pass: "PASS_17", role: "trader", account: "ACCOUNT_ID_17" },
-                { user: "Trader_18", pass: "PASS_18", role: "trader", account: "ACCOUNT_ID_18" },
-                { user: "Trader_19", pass: "PASS_19", role: "trader", account: "ACCOUNT_ID_19" },
-                { user: "Trader_20", pass: "PASS_20", role: "trader", account: "ACCOUNT_ID_20" }
-            ];
-
-            const person = authorized.find(p => p.user === idInput && p.pass === passInput);
-
-            if (person) {
-                localStorage.setItem('currentUser', JSON.stringify(person));
-                window.location.href = "dashboard.html";
-            } else {
-                document.getElementById('errorMsg').classList.remove('hidden');
-            }
-        }
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#d1d5db" }, /* Changed from Blue to Light Gray */
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5 },
+                "size": { "value": 1, "random": true },
+                "line_linked": { 
+                    "enable": true, 
+                    "distance": 150, 
+                    "color": "#d1d5db", /* Changed from Blue to Light Gray */
+                    "opacity": 0.4, 
+                    "width": 1 
+                },
+                "move": { "enable": true, "speed": 2 }
+            },
+            "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" } } },
+            "retina_detect": true
+        });
     </script>
 </body>
 </html>
